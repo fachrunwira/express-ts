@@ -1,12 +1,24 @@
 import "dotenv/config";
 import { connection, poolConnection } from "../config/connection";
 
-export var Database = Object.create(null)
+class Database {
+  #table: string
 
-Database.table = function table(table:string) {
-  return table
+  constructor (table: string) {
+    this.#table = table
+  }
+  
+  public get table() : string {
+    return this.#table
+  }
+  
 }
 
-Database.insert = function insert(fields: object, values: object | undefined) {
-  return fields
+class Insert extends Database {
+  #fields: object
+
+  constructor(table: string, fields: object) {
+    super(table)
+    this.#fields = fields
+  }
 }

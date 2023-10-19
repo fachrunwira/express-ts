@@ -1,9 +1,10 @@
 import { connection } from "../config/connection"
-import { Database } from "../library/database";
+// import { Database } from "../library/database";
+
+// const db = new Database()
 
 async function register(param: any) {
-  return Database.insert([1,2,3,4])
-
+  return 'aha'
   // const sql = `INSERT INTO login (nama) VALUE (?);`
 
   // const res = query(sql, [param.name])
