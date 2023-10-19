@@ -1,7 +1,7 @@
 import { config } from "./conf";
-import { createConnection } from "mysql2/promise";
+import { createConnection, createPool } from "mysql2/promise";
 
-export async function query(sql: string, params: object) {
+export async function connection(sql: string, params: object) {
   const con = await createConnection(config.db)
   
   try {
@@ -18,3 +18,5 @@ export async function query(sql: string, params: object) {
     return err
   }
 }
+
+export const poolConnection = createPool(config.poolConnection)

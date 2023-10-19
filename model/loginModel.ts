@@ -1,20 +1,18 @@
-import { query } from "../config/connection"
+import { connection } from "../config/connection"
+import { Database } from "../library/database";
 
-interface Param {
-  id: number,
-  name: string
-}
+async function register(param: any) {
+  return Database.insert([1,2,3,4])
 
-async function register(param: Param) {
-  const sql = `INSERT INTO login (nama) VALUE (?);`
+  // const sql = `INSERT INTO login (nama) VALUE (?);`
 
-  const res = query(sql, [param.name])
+  // const res = query(sql, [param.name])
 
-  return res.then(async () => {
-    return [true, 'Berhasil']
-  }).catch(async (err:any) => {
-    return [false, err.message]
-  })
+  // return res.then(async () => {
+  //   return [true, 'Berhasil']
+  // }).catch(async (err:any) => {
+  //   return [false, err.message]
+  // })
 }
 
 export default {
