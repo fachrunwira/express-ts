@@ -1,5 +1,6 @@
-import "dotenv/config";
-import { connection, poolConnection } from "../config/connection";
+import { config } from "../config/conf";
+import { createConnection } from "mysql2/promise";
+import "dotenv/config"
 
 class Database {
   #table: string
@@ -11,14 +12,67 @@ class Database {
   public get table() : string {
     return this.#table
   }
-  
+
+  protected async connection(sql: string, params?: object) : Promise<void> {
+    const con = await createConnection(config.db);
+
+    try {
+      con.beginTransaction()
+
+      // const 
+    } catch (error) {
+      
+    }
+  }
 }
 
-class Insert extends Database {
-  #fields: object
+export class Insert extends Database {
+  #fields?: string | object
+  #values?: object
 
-  constructor(table: string, fields: object) {
+  constructor(table: string) {
     super(table)
-    this.#fields = fields
   }
+  
+  public set fields(v : string | object) {
+    if (typeof v === 'object') {
+      const val = Object.values(v);
+      v = "";
+      val.forEach((vl, i) => {
+        v += ((val.length - 1) === i) ? `\`${vl}\`` : `\`${vl}\`,`;
+      });
+    }
+
+    this.#fields = v
+  }
+  
+  public set values(v : object) {
+    this.#values = v
+  }
+
+  private get valuesToString() {
+    const val = typeof this.#values !== "undefined" ? Object.values(this.#values) : [];
+    const lenVal = typeof this.#values !== "undefined" ? Object.keys(this.#values).length : 0;
+    let str = "";
+    if ( typeof this.#values === "object" && typeof this.#values !== "undefined" ) {
+      val.forEach((v, i) => {
+        if (lenVal - 1 === i) {
+          str += typeof v === "number" || typeof v === "boolean" ? v : `'${v}'`;
+        } else {
+          str += typeof v === "number" || typeof v === "boolean" ? `${v},` : `'${v}',`;
+        }
+      });
+    }
+
+    return str
+  }
+
+  public get insert() : any {
+    return `INSERT INTO \`${this.table}\` (${this.#fields}) VALUE (${this.valuesToString});`
+  }
+  
+  public get multiInsert() : string {
+    return 'aha'
+  }
+  
 }

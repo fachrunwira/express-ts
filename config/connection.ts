@@ -1,9 +1,9 @@
 import { config } from "./conf";
-import { createConnection, createPool } from "mysql2/promise";
+import {createConnection, createPool} from "mysql2/promise";
 
-export async function connection(sql: string, params: object) {
+export async function connection(sql: string, params?: object) : Promise<any> {
   const con = await createConnection(config.db)
-  
+
   try {
     con.beginTransaction()
 
@@ -11,11 +11,11 @@ export async function connection(sql: string, params: object) {
 
     con.commit()
 
-    return result
-  } catch (err) {
+    return [true, result]
+  } catch (error) {
     con.rollback()
-    
-    return err
+
+    return [false, error]
   }
 }
 

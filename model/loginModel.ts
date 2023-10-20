@@ -1,19 +1,23 @@
-import { connection } from "../config/connection"
-// import { Database } from "../library/database";
-
-// const db = new Database()
+import { connection, poolConnection } from "../config/connection"
+import { Insert } from "../library/database";
 
 async function register(param: any) {
-  return 'aha'
-  // const sql = `INSERT INTO login (nama) VALUE (?);`
+  const db = new Insert('login')
+  db.fields = ['naa', 'st']
+  db.values = Object.values([param.name, param.status])
 
-  // const res = query(sql, [param.name])
+  const result = await connection(db.insert)
+  return result[0]
+  try {
 
-  // return res.then(async () => {
-  //   return [true, 'Berhasil']
-  // }).catch(async (err:any) => {
-  //   return [false, err.message]
-  // })
+    if (!result[0]) {
+      throw new Error(result[1]);
+    }
+    
+    return result[1]
+  } catch (error) {
+    return error
+  }
 }
 
 export default {
