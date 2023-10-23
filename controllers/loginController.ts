@@ -1,11 +1,14 @@
 import handler from "express-async-handler";
 import multer from "multer";
 import model from "../model/loginModel";
-import joi from "joi";
+import joi, { boolean } from "joi";
+import { Response } from "../library/response"
 const body = multer().none();
 
-export const register = handler(async (req, res, next) => {
+const register = handler(async (req, res, next) => {
   return body(req, res, async (err: any) => {
+    const response = new Response(res)
+
     const schema = joi
       .object({
         name: joi.string().label("Nama").required().messages({
@@ -17,21 +20,19 @@ export const register = handler(async (req, res, next) => {
 
     return schema
       .then(async (result) => {
-        const resul = model.register(result);
+        const resul = await model.register(result);
 
-        return resul
-          .then((msg) => {
-            return res.status(200).json({
-              status: true,
-              message: msg,
-            });
-          })
-          .catch((error) => {
-            return res.status(500).json({
-              status: false,
-              message: error,
-            });
-          });
+        if (resul[0] === true) {
+          response.code = 200
+          response.message = "Berhasil"
+        } else {
+          response.code = 500
+          response.message = "Terjadi Kesalahan"
+          response.content = resul[1].message
+        }
+
+        response.status = resul[0]
+        response.json
       })
       .catch((error) => {
         return res.status(400).json({
@@ -42,3 +43,18 @@ export const register = handler(async (req, res, next) => {
       });
   });
 });
+
+const multiRegister = handler(async (req, res, next) => {
+  return body(req, res, async (err: any) => {
+    const result = await model.multiRegister([])
+
+    res.status(200).json({
+      status: true,
+      message: result
+    })
+  })
+})
+
+export default {
+  register, multiRegister
+}

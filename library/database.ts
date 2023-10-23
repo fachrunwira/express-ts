@@ -1,28 +1,12 @@
-import { config } from "../config/conf";
-import { createConnection } from "mysql2/promise";
-import "dotenv/config"
-
 class Database {
-  #table: string
+  #tbl_name: string
 
   constructor (table: string) {
-    this.#table = table
+    this.#tbl_name = table
   }
   
   public get table() : string {
-    return this.#table
-  }
-
-  protected async connection(sql: string, params?: object) : Promise<void> {
-    const con = await createConnection(config.db);
-
-    try {
-      con.beginTransaction()
-
-      // const 
-    } catch (error) {
-      
-    }
+    return this.#tbl_name
   }
 }
 
@@ -67,12 +51,19 @@ export class Insert extends Database {
     return str
   }
 
-  public get insert() : any {
+  public get insert() : string {
     return `INSERT INTO \`${this.table}\` (${this.#fields}) VALUE (${this.valuesToString});`
   }
   
   public get multiInsert() : string {
-    return 'aha'
+    return `INSERT INTO \`${this.table}\` (${this.#fields}) VALUES `
   }
   
+}
+
+class Update extends Database {
+  
+  constructor(table: string) {
+    super(table)
+  }
 }

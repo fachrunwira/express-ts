@@ -1,22 +1,9 @@
 import { config } from "./conf";
-import {createConnection, createPool} from "mysql2/promise";
+import {createConnection} from "mysql2/promise";
+import { createPool } from "mysql2";
 
-export async function connection(sql: string, params?: object) : Promise<any> {
-  const con = await createConnection(config.db)
-
-  try {
-    con.beginTransaction()
-
-    const [result, ] = await con.execute(sql, params)
-
-    con.commit()
-
-    return [true, result]
-  } catch (error) {
-    con.rollback()
-
-    return [false, error]
-  }
+export async function connection() : Promise<any> {
+  return await createConnection(config.db)
 }
 
 export const poolConnection = createPool(config.poolConnection)

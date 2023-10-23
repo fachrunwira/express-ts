@@ -1,25 +1,34 @@
 import { connection, poolConnection } from "../config/connection"
 import { Insert } from "../library/database";
+import sql from "sql-bricks";
 
-async function register(param: any) {
+async function register(param: any) : Promise<any> {
   const db = new Insert('login')
-  db.fields = ['naa', 'st']
+  db.fields = ['name', 'st']
   db.values = Object.values([param.name, param.status])
 
-  const result = await connection(db.insert)
-  return result[0]
-  try {
+  const con = await connection()
 
-    if (!result[0]) {
-      throw new Error(result[1]);
-    }
-    
-    return result[1]
-  } catch (error) {
-    return error
+  try {
+    con.beginTransaction()
+
+    await con.execute(db.insert)
+
+    con.commit()
+
+    return [true]
+  } catch (errSql) {
+    con.rollback()
+
+    return [false, errSql]
   }
 }
 
+async function multiRegister(params:any) : Promise<any> {
+  // sql.
+}
+
 export default {
-  register
+  register,
+  multiRegister
 }
