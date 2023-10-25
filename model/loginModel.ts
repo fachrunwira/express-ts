@@ -25,7 +25,12 @@ async function register(param: any) : Promise<any> {
 }
 
 async function multiRegister(params:any) : Promise<any> {
-  // sql.
+  const db = new Insert('login');
+  db.fields = ['name', 'st'];
+  db.values = [
+    ['harun', true],
+    ['manies', false]
+  ]
 }
 
 export default {

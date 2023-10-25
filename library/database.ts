@@ -8,11 +8,16 @@ class Database {
   public get table() : string {
     return this.#tbl_name
   }
+
+  protected isUndefined(obj: any) : boolean {
+    return (typeof obj === 'undefined') ? true : false
+  }
 }
 
 export class Insert extends Database {
   #fields?: string | object
   #values?: object
+  #multiValues? : object
 
   constructor(table: string) {
     super(table)
@@ -33,10 +38,15 @@ export class Insert extends Database {
   public set values(v : object) {
     this.#values = v
   }
+  
+  public set setMultiVal(v : object) {
+    Object.values(this.#multiValues).push
+  }
+  
 
-  private get valuesToString() {
+  private get valuesToString() : string {
     const val = typeof this.#values !== "undefined" ? Object.values(this.#values) : [];
-    const lenVal = typeof this.#values !== "undefined" ? Object.keys(this.#values).length : 0;
+    const lenVal = val.length
     let str = "";
     if ( typeof this.#values === "object" && typeof this.#values !== "undefined" ) {
       val.forEach((v, i) => {
@@ -51,11 +61,20 @@ export class Insert extends Database {
     return str
   }
 
+  private get multiValues() {
+    let str = "";
+    const val = typeof this.#values !== 'undefined' ? Object.values(this.#values) : []
+    const lenVal = val.length
+
+    return str;
+  }
+
   public get insert() : string {
     return `INSERT INTO \`${this.table}\` (${this.#fields}) VALUE (${this.valuesToString});`
   }
   
-  public get multiInsert() : string {
+  public get multiInsert() : any {
+    return this.#values
     return `INSERT INTO \`${this.table}\` (${this.#fields}) VALUES `
   }
   
