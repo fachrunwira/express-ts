@@ -53,8 +53,30 @@ const multiRegister = handler(async (req, res, next) => {
       message: result
     })
   })
-})
+});
+
+const prepareRegister = handler(async (req, res, next) => {
+  return body(req, res,async (err:any) => {
+    const result = await model.prepareRegister('');
+
+    res.status(200).json({
+      status: true,
+      message: result
+    });
+  });
+});
+
+const update = handler(async (req, res, next) => {
+  return body(req, res,async (err: any) => {
+    const result = await model.update('');
+
+    res.status(200).json({
+      status: true,
+      message: result
+    });
+  });
+});
 
 export default {
-  register, multiRegister
+  register, multiRegister, prepareRegister, update
 }
